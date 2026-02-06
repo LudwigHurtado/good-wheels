@@ -25,6 +25,7 @@ class Ride {
     agreedPrice = null,
     charityCategory,
     status = RIDE_STATUSES.REQUESTED,
+    candidateDriverIds = [],
   }) {
     this.id = id;
     this.passengerId = passengerId;
@@ -36,6 +37,7 @@ class Ride {
     this.agreedPrice = agreedPrice;
     this.charityCategory = charityCategory;
     this.status = status;
+    this.candidateDriverIds = candidateDriverIds;
   }
 }
 

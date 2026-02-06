@@ -1,4 +1,5 @@
 const { Ride, RIDE_STATUSES } = require('../models/ride');
+const { listOnlineDrivers, assignRideToDriver } = require('./driverService');
 
 /**
  * In-memory ride storage for lifecycle prototyping.
@@ -14,6 +15,14 @@ function createRide(data) {
     ...data,
     status: data.status || RIDE_STATUSES.REQUESTED,
   });
+
+  if (ride.status === RIDE_STATUSES.REQUESTED) {
+    const candidateDrivers = listOnlineDrivers();
+
+    // TODO: Replace this simple listing with a ranking/matching algorithm.
+    ride.candidateDriverIds = candidateDrivers.map((driver) => driver.id);
+    ride.status = RIDE_STATUSES.OFFERED;
+  }
 
   rides.set(rideId, ride);
   return ride;
@@ -63,6 +72,8 @@ function acceptRide(rideId, driverId, agreedPrice) {
   ride.driverId = driverId;
   ride.agreedPrice = agreedPrice;
   ride.status = RIDE_STATUSES.ACCEPTED;
+
+  assignRideToDriver(driverId, rideId);
 
   return ride;
 }
